@@ -1,0 +1,149 @@
+Top 50 Grossing Action Movies
+Lubens Jean-Paul
+2022-11-12
+This R markdown document describes the steps in my process to scrape the data for the top 50 grossing action movies from IMDB. I will create a dataframe containing the movie’s title, release year, rating, gross, and synopsis
+
+Installing Packages
+First the packages that are necessary to scrape the movie data from IMDB are rvest and dplyr packages. After installing these packages i used the library funtion to load them into RStusio memory
+
+install.packages("dplyr")
+## Installing package into '/cloud/lib/x86_64-pc-linux-gnu-library/4.2'
+## (as 'lib' is unspecified)
+install.packages("rvest")
+## Installing package into '/cloud/lib/x86_64-pc-linux-gnu-library/4.2'
+## (as 'lib' is unspecified)
+library(rvest)
+library(dplyr)
+## 
+## Attaching package: 'dplyr'
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+Creating variables
+In order to scrape the data from the website I will create variables for the web link and page for the rvest function to read the html code for the webpage
+
+link = "https://www.imdb.com/search/title/?title_type=feature&genres=action&sort=boxoffice_gross_us,desc&explore=genres"
+
+page = read_html(link)
+Column Retrieval
+Now that I have created the variables for the links, I will create the varibales that I will later use as the data frame columns that describe the movies’ title, year, rating, gross product, and synopsis. I used the chrome extension “selector gadget to retrieve the CSS code for each of the field variables
+
+name = page %>% html_nodes(".lister-item-header a") %>% html_text()
+year = page %>% html_nodes(".text-muted.unbold") %>% html_text()
+rating =page %>% html_nodes(".ratings-imdb-rating strong") %>%  html_text()
+synopsis = page %>% html_nodes(".ratings-bar+ .text-muted") %>% html_text()
+gross = page %>% html_nodes(".ghost~ .text-muted+ span") %>% html_text()
+Data Frame Creation
+And finally I will create a data frame using the data that was extracted from the ImDB wepage into a five column and 50 row data frame
+
+movies = data.frame(name, year, rating, gross, synopsis, stringsAsFactors = FALSE )
+movies
+##                                                  name   year rating    gross
+## 1          Star Wars: Episode VII - The Force Awakens (2015)    7.8 $936.66M
+## 2                                   Avengers: Endgame (2019)    8.4 $858.37M
+## 3                             Spider-Man: No Way Home (2021)    8.3 $804.75M
+## 4                                              Avatar (2009)    7.8 $760.51M
+## 5                                       Black Panther (2018)    7.3 $700.06M
+## 6                              Avengers: Infinity War (2018)    8.4 $678.82M
+## 7                                      Jurassic World (2015)    6.9 $652.27M
+## 8                                        The Avengers (2012)    8.0 $623.28M
+## 9             Star Wars: Episode VIII - The Last Jedi (2017)    6.9 $620.18M
+## 10                                      Incredibles 2 (2018)    7.6 $608.58M
+## 11                                    The Dark Knight (2008)    9.0 $534.86M
+## 12                       Rogue One: A Star Wars Story (2016)    7.8 $532.18M
+## 13                   Star Wars: The Rise Of Skywalker (2019)    6.5 $515.20M
+## 14          Star Wars: Episode I - The Phantom Menace (1999)    6.5 $474.54M
+## 15                            Avengers: Age of Ultron (2015)    7.3 $459.01M
+## 16                              The Dark Knight Rises (2012)    8.4 $448.14M
+## 17                                     Captain Marvel (2019)    6.8 $426.83M
+## 18                    The Hunger Games: Catching Fire (2013)    7.5 $424.67M
+## 19         Pirates of the Caribbean: Dead Man's Chest (2006)    7.3 $423.32M
+## 20                     Jurassic World: Fallen Kingdom (2018)    6.1 $417.72M
+## 21                                       Wonder Woman (2017)    7.4 $412.56M
+## 22                                     Iron Man Three (2013)    7.1 $409.01M
+## 23                         Captain America: Civil War (2016)    7.8 $408.08M
+## 24                                   The Hunger Games (2012)    7.2 $408.01M
+## 25                     Jumanji: Welcome to the Jungle (2017)    6.9 $404.52M
+## 26                                         Spider-Man (2002)    7.4 $403.71M
+## 27                                      Jurassic Park (1993)    8.2 $402.45M
+## 28                Transformers: Revenge of the Fallen (2009)    5.9 $402.11M
+## 29                          Spider-Man: Far from Home (2019)    7.4 $390.53M
+## 30                     Guardians of the Galaxy Vol. 2 (2017)    7.6 $389.81M
+## 31       Star Wars: Episode III - Revenge of the Sith (2005)    7.6 $380.26M
+## 32      The Lord of the Rings: The Return of the King (2003)    9.0 $377.85M
+## 33                                       Spider-Man 2 (2004)    7.4 $373.59M
+## 34                                           Deadpool (2016)    8.0 $363.07M
+## 35                                          Furious 7 (2015)    7.1 $353.01M
+## 36                     Transformers: Dark of the Moon (2011)    6.2 $352.39M
+## 37                                    American Sniper (2014)    7.3 $350.13M
+## 38              The Lord of the Rings: The Two Towers (2002)    8.8 $342.55M
+## 39              The Hunger Games: Mockingjay - Part 1 (2014)    6.6 $337.14M
+## 40                                       Spider-Man 3 (2007)    6.3 $336.53M
+## 41                                            Aquaman (2018)    6.8 $335.06M
+## 42                             Spider-Man: Homecoming (2017)    7.4 $334.20M
+## 43                            Guardians of the Galaxy (2014)    8.0 $333.18M
+## 44                 Batman v Superman: Dawn of Justice (2016)    6.4 $330.36M
+## 45                                      Suicide Squad (2016)    5.9 $325.10M
+## 46                                         Deadpool 2 (2018)    7.7 $324.59M
+## 47                                          Star Wars (1977)    8.6 $322.74M
+## 48                                       Transformers (2007)    7.0 $319.25M
+## 49                                           Iron Man (2008)    7.9 $318.41M
+## 50 Indiana Jones and the Kingdom of the Crystal Skull (2008)    6.2 $317.10M
+##                                                                                                                                                                                                                                             synopsis
+## 1                                                                      \nAs a new threat to the galaxy rises, Rey, a desert scavenger, and Finn, an ex-stormtrooper, must join Han Solo and Chewbacca to search for the one hope of restoring peace.
+## 2             \nAfter the devastating events of Avengers: Infinity War (2018), the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.
+## 3                          \nWith Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man.
+## 4                                                                                  \nA paraplegic Marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.
+## 5                                                                     \nT'Challa, heir to the hidden but advanced kingdom of Wakanda, must step forward to lead his people into a new future and must confront a challenger from his country's past.
+## 6                                                                 \nThe Avengers and their allies must be willing to sacrifice all in an attempt to defeat the powerful Thanos before his blitz of devastation and ruin puts an end to the universe.
+## 7                                                         \nA new theme park, built on the original site of Jurassic Park, creates a genetically modified hybrid dinosaur, the Indominus Rex, which escapes containment and goes on a killing spree.
+## 8                                                                              \nEarth's mightiest heroes must come together and learn to fight as a team if they are going to stop the mischievous Loki and his alien army from enslaving humanity.
+## 9                                                                                  \nThe Star Wars saga continues as new heroes and galactic legends go on an epic adventure, unlocking mysteries of the Force and shocking revelations of the past.
+## 10                                            \nThe Incredibles family takes on a new mission which involves a change in family roles: Bob Parr (Mr. Incredible) must manage the house while his wife Helen (Elastigirl) goes out to save the world.
+## 11                                                   \nWhen the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.
+## 12                                                                                 \nIn a time of conflict, a group of unlikely heroes band together on a mission to steal the plans to the Death Star, the Empire's ultimate weapon of destruction.
+## 13                                                                                                            \nIn the riveting conclusion of the landmark Skywalker saga, new legends will be born-and the final battle for freedom is yet to come.
+## 14                                                            \nTwo Jedi escape a hostile blockade to find allies and come across a young boy who may bring balance to the Force, but the long dormant Sith resurface to claim their original glory.
+## 15                \nWhen Tony Stark and Bruce Banner try to jump-start a dormant peacekeeping program called Ultron, things go horribly wrong and it's up to Earth's mightiest heroes to stop the villainous Ultron from enacting his terrible plan.
+## 16                                                      \nEight years after the Joker's reign of anarchy, Batman, with the help of the enigmatic Selina Kyle, is forced from his exile to save Gotham City from the brutal guerrilla terrorist Bane.
+## 17                                                                                                  \nCarol Danvers becomes one of the universe's most powerful heroes when Earth is caught in the middle of a galactic war between two alien races.
+## 18                                                                                     \nKatniss Everdeen and Peeta Mellark become targets of the Capitol after their victory in the 74th Hunger Games sparks a rebellion in the Districts of Panem.
+## 19                                                                     \nJack Sparrow races to recover the heart of Davy Jones to avoid enslaving his soul to Jones' service, as other friends and foes seek the heart for their own agenda as well.
+## 20                                                                                  \nWhen the island's dormant volcano begins roaring to life, Owen and Claire mount a campaign to rescue the remaining dinosaurs from this extinction-level event.
+## 21                                                             \nWhen a pilot crashes and tells of conflict in the outside world, Diana, an Amazonian warrior in training, leaves home to fight a war, discovering her full powers and true destiny.
+## 22                                                                                                        \nWhen Tony Stark's world is torn apart by a formidable terrorist called the Mandarin, he starts an odyssey of rebuilding and retribution.
+## 23                                                                                                                                              \nPolitical involvement in the Avengers' affairs causes a rift between Captain America and Iron Man.
+## 24                        \nKatniss Everdeen voluntarily takes her younger sister's place in the Hunger Games: a televised competition in which two teenagers from each of the twelve Districts of Panem are chosen at random to fight to the death.
+## 25                                                                                                                   \nFour teenagers are sucked into a magical video game, and the only way they can escape is to work together to finish the game.
+## 26                                                                \nAfter being bitten by a genetically-modified spider, a shy teenager gains spider-like abilities that he uses to fight injustice as a masked superhero and face a vengeful enemy.
+## 27                              \nA pragmatic paleontologist touring an almost complete theme park on an island in Central America is tasked with protecting a couple of kids after a power failure causes the park's cloned dinosaurs to run loose.
+## 28                                                      \nSam Witwicky leaves the Autobots behind for a normal life. But when his mind is filled with cryptic symbols, the Decepticons target him and he is dragged back into the Transformers' war.
+## 29                                                                                                           \nFollowing the events of Avengers: Endgame (2019), Spider-Man must step up to take on new threats in a world that has changed forever.
+## 30                                                             \nThe Guardians struggle to keep together as a team while dealing with their personal family issues, notably Star-Lord's encounter with his father the ambitious celestial being Ego.
+## 31        \nThree years into the Clone Wars, the Jedi rescue Palpatine from Count Dooku. As Obi-Wan pursues a new threat, Anakin acts as a double agent between the Jedi Council and Palpatine and is lured into a sinister plan to rule the galaxy.
+## 32                                                                                              \nGandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.
+## 33                                                                                                                \nPeter Parker is beset with troubles in his failing personal life as he battles a brilliant scientist named Doctor Otto Octavius.
+## 34                                                                                                           \nA wisecracking mercenary gets experimented on and becomes immortal but ugly, and sets out to track down the man who ruined his looks.
+## 35                                                                                                                                                     \nDeckard Shaw seeks revenge against Dominic Toretto and his family for his comatose brother.
+## 36                                                                                                      \nThe Autobots learn of a Cybertronian spacecraft hidden on the moon, and race against the Decepticons to reach it and to learn its secrets.
+## 37    \nNavy S.E.A.L. sniper Chris Kyle's pinpoint accuracy saves countless lives on the battlefield and turns him into a legend. Back home with his family after four tours of duty, however, Chris finds that it is the war he can't leave behind.
+## 38                                                              \nWhile Frodo and Sam edge closer to Mordor with the help of the shifty Gollum, the divided fellowship makes a stand against Sauron's new ally, Saruman, and his hordes of Isengard.
+## 39 \nKatniss Everdeen is in District 13 after she shatters the games forever. Under the leadership of President Coin and the advice of her trusted friends, Katniss spreads her wings as she fights to save Peeta and a nation moved by her courage.
+## 40                                                                                          \nA strange black entity from another world bonds with Peter Parker and causes inner turmoil as he contends with new villains, temptations, and revenge.
+## 41                                                                                                 \nArthur Curry, the human-born heir to the underwater kingdom of Atlantis, goes on a quest to prevent a war between the worlds of ocean and land.
+## 42                                        \nPeter Parker balances his life as an ordinary high school student in Queens with his superhero alter-ego Spider-Man, and finds himself on the trail of a new menace prowling the skies of New York City.
+## 43                                                                                                                             \nA group of intergalactic criminals must pull together to stop a fanatical warrior with plans to purge the universe.
+## 44                                                                                   \nFearing that the actions of Superman are left unchecked, Batman takes on the Man of Steel, while the world wrestles with what kind of a hero it really needs.
+## 45                                                             \nA secret government agency recruits some of the most dangerous incarcerated super-villains to form a defensive task force. Their first mission: save the world from the apocalypse.
+## 46                                           \nFoul-mouthed mutant mercenary Wade Wilson (a.k.a. Deadpool) assembles a team of fellow mutant rogues to protect a young boy with supernatural abilities from the brutal, time-traveling cyborg Cable.
+## 47    \nLuke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee and two droids to save the galaxy from the Empire's world-destroying battle station, while also attempting to rescue Princess Leia from the mysterious Darth Vader.
+## 48                                                                         \nAn ancient struggle between two Cybertronian races, the heroic Autobots and the evil Decepticons, comes to Earth, with a clue to the ultimate power held by a teenager.
+## 49                                                                                                            \nAfter being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.
+## 50                           \nIn 1957, archaeologist and adventurer Dr. Henry "Indiana" Jones, Jr. is called back into action and becomes entangled in a Soviet plot to uncover the secret behind mysterious artifacts known as the Crystal Skulls.
+Data frame to CSV
+To make this data frame more easily accessible to any potential stakeholders I will save the data frame as a csv file
+
+write.csv(movies, "movies.csv")
